@@ -1,0 +1,165 @@
+@import "tailwindcss";
+
+/* Tailwind v4: enable class-based dark mode so ThemeProvider can toggle it manually */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #0B0F19;
+  --background-secondary: #141A2A;
+  --foreground: #E9EDF5;
+  --muted: #8B93A7;
+  --border: rgba(255, 255, 255, 0.08);
+  --surface: rgba(255, 255, 255, 0.04);
+
+  --blue: #3B82F6;
+  --purple: #8B5CF6;
+  --cyan: #22D3EE;
+
+  --gradient-primary: linear-gradient(135deg, var(--blue), var(--purple));
+  --gradient-secondary: linear-gradient(135deg, var(--purple), var(--cyan));
+}
+
+/* Light theme override (manual toggle via ThemeProvider adding/removing .light on <html>) */
+.light {
+  --background: #F7F8FC;
+  --background-secondary: #EDEFF7;
+  --foreground: #12131A;
+  --muted: #565C6E;
+  --border: rgba(10, 12, 20, 0.08);
+  --surface: rgba(10, 12, 20, 0.03);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-background-secondary: var(--background-secondary);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-surface: var(--surface);
+  --color-blue: var(--blue);
+  --color-purple: var(--purple);
+  --color-cyan: var(--cyan);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-space-grotesk);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* ---- Code-driven background: replaces the old bg-tech.png ---- */
+.bg-field {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  overflow: hidden;
+  background: var(--background);
+}
+
+.bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, var(--border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+  opacity: 0.5;
+}
+
+.bg-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  opacity: 0.35;
+  will-change: transform;
+}
+
+.bg-blob--1 {
+  width: 520px;
+  height: 520px;
+  top: -10%;
+  left: -10%;
+  background: var(--gradient-primary);
+  animation: float-a 22s ease-in-out infinite;
+}
+
+.bg-blob--2 {
+  width: 480px;
+  height: 480px;
+  bottom: -15%;
+  right: -8%;
+  background: var(--gradient-secondary);
+  animation: float-b 26s ease-in-out infinite;
+}
+
+.bg-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+@keyframes float-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(60px, 40px) scale(1.08); }
+}
+
+@keyframes float-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-50px, -30px) scale(1.05); }
+}
+
+/* ---- Glass surface utility ---- */
+.glass {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* ---- Gradient text ---- */
+.text-gradient {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---- Neural bridge pulse (hero signature graphic) ---- */
+@keyframes pulse-dash {
+  to { stroke-dashoffset: -40; }
+}
+.neural-edge {
+  stroke-dasharray: 6 6;
+  animation: pulse-dash 2.4s linear infinite;
+}
+
+/* ---- Tech pill marquee ---- */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marquee 28s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* ---- Reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
